@@ -20,7 +20,7 @@ class Halstead:
         Verifica se o arquivo é .c
         :return: bool
         """
-        return self.file[-1] == 'c' and self.file[-2] == '.'
+        return self.file[-2:] == '.c'
 
     def count_lines_in_file(self):
         """
