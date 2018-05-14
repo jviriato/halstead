@@ -1,3 +1,8 @@
+"""
+O programa calcula as métricas de Halstead e o LOC 
+na linguagem Python, reconhecendo um arquivo .c.
+"""
+
 import math
 import argparse # para argumentos em linha de comando
 
