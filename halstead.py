@@ -44,6 +44,8 @@ class Halstead:
         :return: int
         """
         n1 = 0
+        
+        return n1
 
 def main():
 
