@@ -34,11 +34,20 @@ class Halstead:
         Conta as linhas de código de um arquivo, excluindo as linhas em branco
         :return: int
         """
-        loc = 0
+        self.lines_of_code = 0
         for i in open(self.file):
             if i.strip():
-                loc += 1
-        return loc
+                self.lines_of_code += 1
+        return self.lines_of_code
+
+    def find_operators_and_operands(self):
+        """
+        Acha os operadores e operandos distintos do .c para os
+        respectivos vetores
+        :return: void
+        """
+        for i in open(self.file):
+
 
     def calculates_n1(self):
         """
@@ -47,6 +56,14 @@ class Halstead:
         """
 
         return self.num_operators
+
+    def calculates_n2(self):
+        """
+        Calcula o n2, que é o número de operandos distintos
+        :return: int
+        """
+
+        return self.num_operands
 
 def main():
 
@@ -61,7 +78,7 @@ def main():
     print("Arquivo é válido?", h.check_if_file_is_valid())
     print("LOC:", h.count_lines_in_file())
     print("n1:", h.calculates_n1())
-
+    print("n2:", h.calculates_n2())
 
 if __name__ == "__main__":
     main()
