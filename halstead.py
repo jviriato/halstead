@@ -37,6 +37,13 @@ class Halstead:
             if i.strip():
                 loc += 1
         return loc
+        
+    def calculates_n1(self):
+        """
+        Calcula o n1, que é o número de operadores distintos
+        :return: int
+        """
+        n1 = 0
 
 def main():
 
@@ -50,7 +57,7 @@ def main():
     h = Halstead(args.file)
     print("Arquivo é válido?", h.check_if_file_is_valid())
     print("LOC:", h.count_lines_in_file())
-
+    print("n1:", h.calculates_n1())
 
 
 if __name__ == "__main__":
