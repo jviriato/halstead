@@ -16,9 +16,11 @@ class Halstead:
         :param file: nome do arquivo
         """
         self.file = file
-        self.num_operators = 0
-        self.num_operands  = 0
-        self.lines_of_code = 0
+        self.num_operators    = 0
+        self.num_operands     = 0
+        self.lines_of_code    = 0
+        self.unique_operators = {}
+        self.unique_operands  = {}
 
     def check_if_file_is_valid(self):
         """
@@ -37,15 +39,14 @@ class Halstead:
             if i.strip():
                 loc += 1
         return loc
-        
+
     def calculates_n1(self):
         """
         Calcula o n1, que é o número de operadores distintos
         :return: int
         """
-        n1 = 0
-        
-        return n1
+
+        return self.num_operators
 
 def main():
 
