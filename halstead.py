@@ -1,37 +1,39 @@
 """
-O programa calcula as métricas de Halstead e o LOC 
+O programa calcula as métricas de Halstead e o LOC
 na linguagem Python, reconhecendo um arquivo .c.
 """
 
 import math
 import time
-import argparse # para argumentos em linha de comando
+import argparse  # para argumentos em linha de comando
+
 
 class Halstead:
     """
     Classe que encapsula todas as métricas de Halstead
     """
+
     def __init__(self, file):
         """
         Construtor de um novo objeto 'Halstead'
         :param file: nome do arquivo
         """
         self.file = file
-        self.num_uni_operators    = 0     #n1
-        self.num_uni_operands     = 0     #n2
-        self.num_tot_operators    = 0     #N1
-        self.num_tot_operands     = 0     #N2
-        self.lines_of_code        = 0     
-        self.unique_operators     = {}
-        self.unique_operands      = {}
-        self.program_lenght       = 0     #N = N1+N2
-        self.program_vocabulary   = 0     #n = n1+n2
-        self.volume               = 0     #V = N*log2(n)
-        self.difficulty           = 0     #D = (n1/2)*(N2/n2)
-        self.effort               = 0     #E = V*D
-        self.program_time         = 0     #T = E/18
-        self.number_of_bugs       = 0     #B = V/3000
- 
+        self.num_uni_operators = 0  # n1
+        self.num_uni_operands = 0  # n2
+        self.num_tot_operators = 0  # N1
+        self.num_tot_operands = 0  # N2
+        self.lines_of_code = 0
+        self.unique_operators = {}
+        self.unique_operands = {}
+        self.program_lenght = 0  # N = N1+N2
+        self.program_vocabulary = 0  # n = n1+n2
+        self.volume = 0  # V = N*log2(n)
+        self.difficulty = 0  # D = (n1/2)*(N2/n2)
+        self.effort = 0  # E = V*D
+        self.program_time = 0  # T = E/18
+        self.number_of_bugs = 0  # B = V/3000
+
     def check_if_file_is_valid(self):
         """
         Verifica se o arquivo é .c
@@ -56,8 +58,7 @@ class Halstead:
         respectivos vetores
         :return: void
         """
-        for i in open(self.file):
-
+        #for i in open(self.fi
 
     def calculates_n1(self):
         """
@@ -75,7 +76,7 @@ class Halstead:
 
         return self.num_uni_operands
 
-    def calculates_N1(self)
+    def calculates_N1(self):
         """
         Calcula o N1, que é o numero total de operadores
         :return: int
@@ -83,7 +84,7 @@ class Halstead:
 
         return self.num_tot_operands
 
-    def calculates_N2(self)
+    def calculates_N2(self):
         """
         Calcula o N2, que é o número total de operandos
         :return: int
@@ -91,7 +92,7 @@ class Halstead:
 
         return self.num_tot_operands
 
-    def calculates_n(self)
+    def calculates_n(self):
         """
         Calcula o n, que é o vocabulário do programa -> n1+n2
         :return: int
@@ -99,7 +100,7 @@ class Halstead:
         self.program_vocabulary = self.num_uni_operands + self.num_uni_operators
         return self.program_vocabulary
 
-    def calculates_N(self)
+    def calculates_N(self):
         """
         Calcula o N, que é o tamanho do programa -> N1+N2
         :return: int
@@ -107,23 +108,25 @@ class Halstead:
         self.program_lenght = self.num_tot_operands + self.num_tot_operators
         return self.program_lenght
 
-    def calculates_V(self)
+    def calculates_V(self):
         """
         Calcula o V, que é o volume do programa -> N * log2 (n)
         :return: float
         """
-        self.volume = (self.program_lenght) * math.log(self.program_vocabulary, 2)
+        if self.program_vocabulary != 0:
+            self.volume = (self.program_lenght) * math.log(self.program_vocabulary, 2)
         return self.volume
 
-    def calculates_D(self)
+    def calculates_D(self):
         """
         Calcula o D, que é a dificuldade do programa -> (n1/2) * (N2/n2)
         :return: float
         """
-        self.difficulty = (self.num_uni_operators/2) * (self.num_tot_operands/self.num_uni_operands)
+        if self.num_uni_operands != 0:
+            self.difficulty = (self.num_uni_operators / 2) * (self.num_tot_operands / self.num_uni_operands)
         return self.difficulty
 
-    def calculates_E(self)
+    def calculates_E(self):
         """
         Calcula o E, que é o esforço do programa -> D * V
         :return: float
@@ -131,27 +134,27 @@ class Halstead:
         self.effort = self.difficulty * self.volume
         return self.effort
 
-    def calculates_T
+    def calculates_T(self):
         """
         Calcula o T, que é o tempo do programa -> E/18
         :return: float
         """
-        self.time = self.effort/18
+        self.time = self.effort / 18
         return self.effort
 
-    def calculates_B
+    def calculates_B(self):
         """
         Calcula o B, que é o número de bugs -> V/3000
         :return: float
         """
-        self.number_of_bugs = self.volume/3000
+        self.number_of_bugs = self.volume / 3000
         return self.number_of_bugs
 
-def main():
 
+def main():
     # Trata o argumento pela linha de comando
     parser = argparse.ArgumentParser()
-    parser.add_argument("file", help="Nome do arquivo", type= str)
+    parser.add_argument("file", help="Nome do arquivo", type=str)
     args = parser.parse_args()
     print("Nome do arquivo:", args.file)
 
@@ -166,14 +169,12 @@ def main():
     print("n:", h.calculates_n())
     print("N:", h.calculates_N())
     print("V:", h.calculates_V())
-    print("D:", h.calculates_D())    
-    print("E:", h.calculates_D())
+    print("D:", h.calculates_D())
+    print("E:", h.calculates_E())
     print("T:", h.calculates_T())
     print("B:", h.calculates_B())
 
-    """
-    talvez  ^N = n1*log2(n1) + n2*log2(n2)
-    """
+    #talvez  ^N = n1*log2(n1) + n2*log2(n2)
 
 if __name__ == "__main__":
     main()
