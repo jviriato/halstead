@@ -19,20 +19,20 @@ class Halstead:
         :param file: nome do arquivo
         """
         self.file = file
-        self.num_uni_operators = 0  # n1
-        self.num_uni_operands = 0  # n2
-        self.num_tot_operators = 0  # N1
-        self.num_tot_operands = 0  # N2
-        self.lines_of_code = 0
-        self.unique_operators = {}
-        self.unique_operands = {}
-        self.program_lenght = 0  # N = N1+N2
+        self.num_uni_operators  = 0  # n1
+        self.num_uni_operands   = 0  # n2
+        self.num_tot_operators  = 0  # N1
+        self.num_tot_operands   = 0  # N2
+        self.lines_of_code      = 0
+        self.unique_operators   = {}
+        self.unique_operands    = {}
+        self.program_lenght     = 0  # N = N1+N2
         self.program_vocabulary = 0  # n = n1+n2
-        self.volume = 0  # V = N*log2(n)
-        self.difficulty = 0  # D = (n1/2)*(N2/n2)
-        self.effort = 0  # E = V*D
-        self.program_time = 0  # T = E/18
-        self.number_of_bugs = 0  # B = V/3000
+        self.volume             = 0  # V = N*log2(n)
+        self.difficulty         = 0  # D = (n1/2)*(N2/n2)
+        self.effort             = 0  # E = V*D
+        self.program_time       = 0  # T = E/18
+        self.number_of_bugs     = 0  # B = V/3000
 
     def check_if_file_is_valid(self):
         """
