@@ -6,7 +6,7 @@ na linguagem Python, reconhecendo um arquivo .c.
 import math
 import time
 import argparse  # para argumentos em linha de comando
-
+import re        # para expressões regulares
 
 class Halstead:
     """
@@ -54,6 +54,18 @@ class Halstead:
                 self.lines_of_code += 1
         return self.lines_of_code
 
+    def search(self):
+        print("\nFunções presentes no código: (em stack)\n")
+        stack_of_functions = []
+        with open(self.file) as f:
+            lines = f.readlines()
+            # print(lines)
+            for line in lines:
+                regex = re.compile('^[unsigned |signed |long ]*[int|float|char|long|double]+[\'*\']*[\' \']+[\'*\']*[\w]+[\' \']*[\'(\']')
+                p = regex.match(line)
+                if p:
+                    stack_of_functions.append(p.group())
+                    print(stack_of_functions)
     def find_operators_and_operands(self):
         """
         Acha os operadores e operandos distintos do .c para os
@@ -174,18 +186,18 @@ def main():
     h = Halstead(args.file)
     print("Arquivo é válido?", h.check_if_file_is_valid())
     print("LOC:", h.count_lines_in_file())
-    print("n1:", h.calculates_n1())
-    print("n2:", h.calculates_n2())
-    print("N1:", h.calculates_N1())
-    print("N2:", h.calculates_N2())
-    print("n:", h.calculates_n())
-    print("N:", h.calculates_N())
-    print("V:", h.calculates_V())
-    print("D:", h.calculates_D())
-    print("E:", h.calculates_E())
-    print("T:", h.calculates_T())
-    print("B:", h.calculates_B())
-
+    # print("n1:", h.calculates_n1())
+    # print("n2:", h.calculates_n2())
+    # print("N1:", h.calculates_N1())
+    # print("N2:", h.calculates_N2())
+    # print("n:", h.calculates_n())
+    # print("N:", h.calculates_N())
+    # print("V:", h.calculates_V())
+    # print("D:", h.calculates_D())
+    # print("E:", h.calculates_E())
+    # print("T:", h.calculates_T())
+    # print("B:", h.calculates_B())
+    h.search()
     #talvez  ^N = n1*log2(n1) + n2*log2(n2)
 
 if __name__ == "__main__":
