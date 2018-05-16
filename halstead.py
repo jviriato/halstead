@@ -24,8 +24,10 @@ class Halstead:
         self.num_tot_operators  = 0  # N1
         self.num_tot_operands   = 0  # N2
         self.lines_of_code      = 0
-        self.unique_operators   = {}
-        self.unique_operands    = {}
+        self.operators          = {}
+        self.operands           = {}
+        #self.unique_operators   = {}
+        #self.unique_operands    = {}
         self.program_lenght     = 0  # N = N1+N2
         self.program_vocabulary = 0  # n = n1+n2
         self.volume             = 0  # V = N*log2(n)
@@ -58,7 +60,17 @@ class Halstead:
         respectivos vetores
         :return: void
         """
-        #for i in open(self.fi
+        self.operators = {'break', 'case', 'continue', 'default', 'do', 'if',       #nome de função
+                          'enum', 'for', 'goto', 'if', 'return', 'else', 'sizeof',
+                          'struct', 'switch', 'while', '{}', '()', '[]', '>>=', '<<=',
+                          '+=', '-=', '=+', '=-', '*=', '=*', '/=', '=/', '%=', '=%',
+                          '&=', '=&', '^=', '|=', '>>', '<<', '++', '--', '->', '&&',
+                          '||', '<=', '>=', '==', '!=', ';', ',', ';', '=', '.', '&',
+                          '!', '~', '-', '+', '*', '/', '%', '<', '>', '^', '|', '?',
+                          ':', '? :'}
+
+
+        #for i in open(self.file)
 
     def calculates_n1(self):
         """
