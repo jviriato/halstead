@@ -61,7 +61,7 @@ class Halstead:
             lines = f.readlines()
             # print(lines)
             for line in lines:
-                regex = re.compile('^[unsigned |signed |long ]*[int|float|char|long|double]+[\'*\']*[\' \']+[\'*\']*[\w]+[\' \']*[\'(\']')
+                regex = re.compile(r"(unsigned |signed |long )*(int|float|char|long|double)+['*']*[' ']+['*']*[\w]+[' ']*['(']")
                 p = regex.match(line)
                 if p:
                     stack_of_functions.append(p.group())
