@@ -4,7 +4,6 @@ na linguagem Python, reconhecendo um arquivo .c.
 """
 
 import math
-import time
 import argparse  # para argumentos em linha de comando
 import re        # para expressões regulares
 
@@ -26,8 +25,10 @@ class Halstead:
         self.lines_of_code      = 0
         self.operators          = {}
         self.operands           = {}
-        #self.unique_operators   = {}
-        #self.unique_operands    = {}
+        self.unique_operators   = {}
+        self.unique_operands    = {}
+        self.total_operators    = {}
+        self.total_operands     = {}
         self.program_lenght     = 0  # N = N1+N2
         self.program_vocabulary = 0  # n = n1+n2
         self.volume             = 0  # V = N*log2(n)
@@ -61,11 +62,12 @@ class Halstead:
             lines = f.readlines()
             # print(lines)
             for line in lines:
-                regex = re.compile(r"(unsigned |signed |long )*(int|float|char|long|double)+['*']*[' ']+['*']*[\w]+[' ']*['(']")
+                regex = re.compile(r"(unsigned |signed |long |short )*(int|float|char|long|short|signed|unsigned|double|void|bool)+['*']*[' ']+['*']*[\w]+[' ']*['(']")
                 p = regex.match(line)
                 if p:
                     stack_of_functions.append(p.group())
                     print(stack_of_functions)
+
     def find_operators_and_operands(self):
         """
         Acha os operadores e operandos distintos do .c para os
@@ -89,6 +91,7 @@ class Halstead:
         Calcula o n1, que é o número de operadores distintos
         :return: int
         """
+        self.num_uni_operators = len(self.unique_operators)  # pode ser trocado se for outra implementação
 
         return self.num_uni_operators
 
@@ -97,6 +100,7 @@ class Halstead:
         Calcula o n2, que é o número de operandos distintos
         :return: int
         """
+        self.num_uni_operands = len(self.unique_operands)  # pode ser trocado se for outra implementação
 
         return self.num_uni_operands
 
@@ -105,6 +109,7 @@ class Halstead:
         Calcula o N1, que é o numero total de operadores
         :return: int
         """
+        self.num_tot_operators = len(self.total_operators)  # pode ser trocado se for outra implementação
 
         return self.num_tot_operands
 
@@ -113,6 +118,7 @@ class Halstead:
         Calcula o N2, que é o número total de operandos
         :return: int
         """
+        self.num_tot_operands = len(self.total_operands)  # pode ser trocado se for outra implementação
 
         return self.num_tot_operands
 
@@ -122,6 +128,7 @@ class Halstead:
         :return: int
         """
         self.program_vocabulary = self.num_uni_operands + self.num_uni_operators
+
         return self.program_vocabulary
 
     def calculates_N(self):
@@ -130,6 +137,7 @@ class Halstead:
         :return: int
         """
         self.program_lenght = self.num_tot_operands + self.num_tot_operators
+
         return self.program_lenght
 
     def calculates_V(self):
@@ -139,6 +147,7 @@ class Halstead:
         """
         if self.program_vocabulary != 0:
             self.volume = (self.program_lenght) * math.log(self.program_vocabulary, 2)
+
         return self.volume
 
     def calculates_D(self):
@@ -148,6 +157,7 @@ class Halstead:
         """
         if self.num_uni_operands != 0:
             self.difficulty = (self.num_uni_operators / 2) * (self.num_tot_operands / self.num_uni_operands)
+
         return self.difficulty
 
     def calculates_E(self):
@@ -156,6 +166,7 @@ class Halstead:
         :return: float
         """
         self.effort = self.difficulty * self.volume
+
         return self.effort
 
     def calculates_T(self):
@@ -164,6 +175,7 @@ class Halstead:
         :return: float
         """
         self.time = self.effort / 18
+
         return self.effort
 
     def calculates_B(self):
@@ -172,6 +184,7 @@ class Halstead:
         :return: float
         """
         self.number_of_bugs = self.volume / 3000
+
         return self.number_of_bugs
 
 
@@ -198,7 +211,6 @@ def main():
     # print("T:", h.calculates_T())
     # print("B:", h.calculates_B())
     h.search()
-    #talvez  ^N = n1*log2(n1) + n2*log2(n2)
 
 if __name__ == "__main__":
     main()
