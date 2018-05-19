@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 O programa calcula as métricas de Halstead e o LOC
 na linguagem Python, reconhecendo um arquivo .c.
@@ -146,8 +148,8 @@ class Halstead:
                 else:
                     for function in self.functions:
                         if re.search(function, line):
-                        print(function)
-                        print(line)
+                            print(function)
+                            print(line)
 
     def find_unique_operators_and_operands(self):
         """
