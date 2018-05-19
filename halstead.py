@@ -127,18 +127,27 @@ class Halstead:
                         else:
                             self.total_operators.append(each)
 
+        for i, operator in enumerate(self.functions):
+            self.functions[i] = (" ").join(operator)
+
         #Trata as linhas do código
         with open(self.file) as f:
             lines = f.readlines()
             for line in lines:
                 if re.search('#include', line):
                     pass
-                elif line == '\n': #tirar
+                elif line == '\n':
                     pass
                 elif line[0] == '/':
                     pass
-                else:
+                elif line[0] == '{':    # se for de excluir depois, fazer um outro if pra }
                     print(line)
+                    self.total_operators.append('{}')
+                else:
+                    for function in self.functions:
+                        #if re.search(function, line):
+                        print(function)
+                        print(line)
 
 
     def calculates_n1(self):
@@ -231,7 +240,7 @@ class Halstead:
         """
         self.time = self.effort / 18
 
-        return self.effort
+        return self.time
 
     def calculates_B(self):
         """
@@ -254,7 +263,7 @@ def main():
     h = Halstead(args.file)
     print("Arquivo é válido?", h.check_if_file_is_valid())
     print("LOC:", h.count_lines_in_file())
-    h.find_operators_and_operands() #Cuidar ordem das funções
+    h.find_operators_and_operands()
     #print("n1:", h.calculates_n1())
     #print("n2:", h.calculates_n2())
     #print("N1:", h.calculates_N1())
