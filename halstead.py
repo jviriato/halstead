@@ -75,7 +75,7 @@ class Halstead:
                     #print(stack_of_functions)
         #print("Quantidade funções: " + str(len(self.functions)))
 
-    def find_operators_and_operands(self):
+    def find_total_operators_and_operands(self):
         """
         Acha os operadores e operandos distintos do .c para os
         respectivos vetores
@@ -107,21 +107,21 @@ class Halstead:
                 else: # nome de função ou tem ponteiro junto ou tem parenteses junto
                     if re.search(".*", each): #tem ponteiro
                         if each[-1] == '*':
-                            each = each.replace('*', ' ')
+                            each = each.replace('*', '')
                             self.total_operators.append(each)
                             self.total_operators.append('*')
                         elif each[0] == '*' and each[-1] == '(':
-                            each = each.replace('*', ' ')
-                            each = each.replace('(', ' ')
+                            each = each.replace('*', '')
+                            each = each.replace('(', '')
                             self.total_operators.append(each)
                             self.total_operators.append('*')
                             self.total_operators.append('()')
                         elif each[0] == '*':
-                            each = each.replace('*', ' ')
+                            each = each.replace('*', '')
                             self.total_operators.append(each)
                             self.total_operators.append('*')
                         elif each[-1] == '(':
-                            each = each.replace('(', ' ')
+                            each = each.replace('(', '')
                             self.total_operators.append(each)
                             self.total_operators.append('()')
                         else:
@@ -145,10 +145,17 @@ class Halstead:
                     self.total_operators.append('{}')
                 else:
                     for function in self.functions:
-                        #if re.search(function, line):
+                        if re.search(function, line):
                         print(function)
                         print(line)
 
+    def find_unique_operators_and_operands(self):
+        """
+        Acha os operandos e operadores únicos, n1 e n2
+        :return: void
+        """
+        self.unique_operators = set(self.total_operators)
+        self.unique_operands = set(self.total_operands)
 
     def calculates_n1(self):
         """
@@ -263,7 +270,8 @@ def main():
     h = Halstead(args.file)
     print("Arquivo é válido?", h.check_if_file_is_valid())
     print("LOC:", h.count_lines_in_file())
-    h.find_operators_and_operands()
+    h.find_total_operators_and_operands()
+    h.find_unique_operators_and_operands()
     #print("n1:", h.calculates_n1())
     #print("n2:", h.calculates_n2())
     #print("N1:", h.calculates_N1())
