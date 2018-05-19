@@ -23,12 +23,13 @@ class Halstead:
         self.num_tot_operators  = 0  # N1
         self.num_tot_operands   = 0  # N2
         self.lines_of_code      = 0
-        self.operators          = {}
-        self.operands           = {}
-        self.unique_operators   = {}
-        self.unique_operands    = {}
-        self.total_operators    = {}
-        self.total_operands     = {}
+        self.operators          = []
+        self.operands           = []
+        self.unique_operators   = []
+        self.unique_operands    = []
+        self.total_operators    = []
+        self.total_operands     = []
+        self.functions          = []
         self.program_lenght     = 0  # N = N1+N2
         self.program_vocabulary = 0  # n = n1+n2
         self.volume             = 0  # V = N*log2(n)
@@ -56,17 +57,23 @@ class Halstead:
         return self.lines_of_code
 
     def search(self):
-        print("\nFunções presentes no código: (em stack)\n")
+        """
+        Função que procura os nomes das funções que são operadores.
+        :return: void
+        """
+        #print("\nFunções presentes no código: (em stack)\n")
         stack_of_functions = []
         with open(self.file) as f:
             lines = f.readlines()
-            # print(lines)
+            #print(lines)
             for line in lines:
                 regex = re.compile(r"(unsigned |signed |long |short )*(int|float|char|long|short|signed|unsigned|double|void|bool)+['*']*[' ']+['*']*[\w]+[' ']*['(']")
                 p = regex.match(line)
                 if p:
                     stack_of_functions.append(p.group())
-                    print(stack_of_functions)
+                    self.functions.append(p.group())
+                    #print(stack_of_functions)
+        #print("Quantidade funções: " + str(len(self.functions)))
 
     def find_operators_and_operands(self):
         """
@@ -74,17 +81,65 @@ class Halstead:
         respectivos vetores
         :return: void
         """
-        self.operators = {'break', 'case', 'continue', 'default', 'do', 'if',       #nome de função
-                          'enum', 'for', 'goto', 'if', 'return', 'else', 'sizeof',
-                          'struct', 'switch', 'while', '{}', '()', '[]', '>>=', '<<=',
-                          '+=', '-=', '=+', '=-', '*=', '=*', '/=', '=/', '%=', '=%',
-                          '&=', '=&', '^=', '|=', '>>', '<<', '++', '--', '->', '&&',
-                          '||', '<=', '>=', '==', '!=', ';', ',', ';', '=', '.', '&',
-                          '!', '~', '-', '+', '*', '/', '%', '<', '>', '^', '|', '?',
-                          ':', '? :'}
+        self.operators = ['unsigned', 'signed', 'long', 'short', 'int', 'float',
+                          'char', 'double', 'void', 'bool', 'break', 'case',
+                          'continue', 'default', 'do', 'if', 'enum', 'for',
+                          'goto', 'if', 'return', 'else', 'sizeof', 'struct',
+                          'switch', 'while', 'scanf', 'printf', '>>=', '<<=', '+=',
+                          '-=', '=+', '=-', '*=', '=*', '/=', '=/', '%=', '=%', '&=',
+                          '=&', '^=', '|=', '>>', '<<', '++', '--', '->', '&&', '||',
+                          '<=', '>=', '==', '!=', ';', ',', ';', '=', '.', '&', '!',
+                          '~', '-', '+', '*', '/', '%', '<', '>', '^', '|', '?', ':']
+                            # Outros elementos:
+                            # '{}', '()', '[]', '? :'
 
+        self.search() # Procura os nomes das funções
+        #Trata a linha dos nomes
+        for i, operator in enumerate(self.functions):
+            self.functions[i] = operator.split()
 
-        #for i in open(self.file)
+        for operator in self.functions:
+            for each in operator:
+                if each in self.operators:
+                    self.total_operators.append(each)
+                elif each == "(":
+                    self.total_operators.append(each+")")
+                else: # nome de função ou tem ponteiro junto ou tem parenteses junto
+                    if re.search(".*", each): #tem ponteiro
+                        if each[-1] == '*':
+                            each = each.replace('*', ' ')
+                            self.total_operators.append(each)
+                            self.total_operators.append('*')
+                        elif each[0] == '*' and each[-1] == '(':
+                            each = each.replace('*', ' ')
+                            each = each.replace('(', ' ')
+                            self.total_operators.append(each)
+                            self.total_operators.append('*')
+                            self.total_operators.append('()')
+                        elif each[0] == '*':
+                            each = each.replace('*', ' ')
+                            self.total_operators.append(each)
+                            self.total_operators.append('*')
+                        elif each[-1] == '(':
+                            each = each.replace('(', ' ')
+                            self.total_operators.append(each)
+                            self.total_operators.append('()')
+                        else:
+                            self.total_operators.append(each)
+
+        #Trata as linhas do código
+        with open(self.file) as f:
+            lines = f.readlines()
+            for line in lines:
+                if re.search('#include', line):
+                    pass
+                elif line == '\n': #tirar
+                    pass
+                elif line[0] == '/':
+                    pass
+                else:
+                    print(line)
+
 
     def calculates_n1(self):
         """
@@ -199,18 +254,19 @@ def main():
     h = Halstead(args.file)
     print("Arquivo é válido?", h.check_if_file_is_valid())
     print("LOC:", h.count_lines_in_file())
-    # print("n1:", h.calculates_n1())
-    # print("n2:", h.calculates_n2())
-    # print("N1:", h.calculates_N1())
-    # print("N2:", h.calculates_N2())
-    # print("n:", h.calculates_n())
-    # print("N:", h.calculates_N())
-    # print("V:", h.calculates_V())
-    # print("D:", h.calculates_D())
-    # print("E:", h.calculates_E())
-    # print("T:", h.calculates_T())
-    # print("B:", h.calculates_B())
-    h.search()
+    h.find_operators_and_operands() #Cuidar ordem das funções
+    #print("n1:", h.calculates_n1())
+    #print("n2:", h.calculates_n2())
+    #print("N1:", h.calculates_N1())
+    #print("N2:", h.calculates_N2())
+    #print("n:", h.calculates_n())
+    #print("N:", h.calculates_N())
+    #print("V:", h.calculates_V())
+    #print("D:", h.calculates_D())
+    #print("E:", h.calculates_E())
+    #print("T:", h.calculates_T())
+    #print("B:", h.calculates_B())
+
 
 if __name__ == "__main__":
     main()
