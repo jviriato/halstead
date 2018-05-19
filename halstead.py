@@ -136,20 +136,26 @@ class Halstead:
         with open(self.file) as f:
             lines = f.readlines()
             for line in lines:
-                if re.search('#include', line):
+                if re.search('#include', line):    #include
                     pass
-                elif line == '\n':
+                elif line == '\n':                 #linha em branco
                     pass
-                elif line[0] == '/':
+                elif line[0] == '/':               #comentário
                     pass
-                elif line[0] == '{':    # se for de excluir depois, fazer um outro if pra }
-                    print(line)
+                elif line[0] == '{':               #ignora }, porque pra cada { tem um }
                     self.total_operators.append('{}')
-                else:
+                else:                              #linha de código normal
                     for function in self.functions:
-                        if re.search(function, line):
+                        if line.find(function) > -1:  #definição de função e falta coisa para ser tratada
                             print(function)
                             print(line)
+                            #alguma re parecida com a de baixo
+                            #regex = re.compile(r"(unsigned |signed |long |short )*(int|float|char|long|short|signed|unsigned|double|void|bool)+['*']*[' ']+['*']*[\w]+[' ']*['(']")
+                            #p = regex.match(line)
+                            pos = line.find('(')
+                            print(pos)
+
+
 
     def find_unique_operators_and_operands(self):
         """
