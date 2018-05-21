@@ -6,6 +6,8 @@ na linguagem Python, reconhecendo um arquivo .c.
 """
 
 import math
+import glob
+import os
 import argparse  # para argumentos em linha de comando
 import re        # para expressões regulares
 import string
@@ -381,26 +383,30 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("file", help="Nome do arquivo", type=str)
     args = parser.parse_args()
-    print("Nome do arquivo:", args.file)
 
     # Cria a classe que fará as metricas
-    h = Halstead(args.file)
-    print("Arquivo é válido?", h.check_if_file_is_valid())
-    print("LOC:", h.count_lines_in_file())
-    h.find_total_operators_and_operands()
-    h.find_unique_operators_and_operands()
-    print("n1:", h.calculates_n1())
-    print("n2:", h.calculates_n2())
-    print("N1:", h.calculates_N1())
-    print("N2:", h.calculates_N2())
-    print("n:", h.calculates_n())
-    print("N:", h.calculates_N())
-    print("V:", h.calculates_V())
-    print("D:", h.calculates_D())
-    print("E:", h.calculates_E())
-    print("T:", h.calculates_T())
-    print("B:", h.calculates_B())
+    files_path = [os.path.abspath(args.file) for x in os.listdir()]
 
+    for file in os.listdir(args.file):
+        if file.endswith(".c"):
+            print("Nome do arquivo:", file)
+            print(os.path.join(args.file))
+            h = Halstead(args.file + '/' + file)
+            print("LOC:", h.count_lines_in_file())
+            h.find_total_operators_and_operands()
+            h.find_unique_operators_and_operands()
+            print("n1:", h.calculates_n1())
+            print("n2:", h.calculates_n2())
+            print("N1:", h.calculates_N1())
+            print("N2:", h.calculates_N2())
+            print("n:", h.calculates_n())
+            print("N:", h.calculates_N())
+            print("V:", h.calculates_V())
+            print("D:", h.calculates_D())
+            print("E:", h.calculates_E())
+            print("T:", h.calculates_T())
+            print("B:", h.calculates_B())
+            print("\n")
 
 if __name__ == "__main__":
     main()
