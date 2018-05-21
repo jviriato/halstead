@@ -8,6 +8,7 @@ na linguagem Python, reconhecendo um arquivo .c.
 import math
 import argparse  # para argumentos em linha de comando
 import re        # para expressões regulares
+import string
 
 class Halstead:
     """
@@ -63,19 +64,16 @@ class Halstead:
         Função que procura os nomes das funções que são operadores.
         :return: void
         """
-        #print("\nFunções presentes no código: (em stack)\n")
+        #Funções presentes no código (em stack)
         stack_of_functions = []
         with open(self.file) as f:
             lines = f.readlines()
-            #print(lines)
-            for line in lines:
+            for line in lines:        # expressão regular para achar as funções
                 regex = re.compile(r"(unsigned |signed |long |short )*(int|float|char|long|short|signed|unsigned|double|void|bool)+['*']*[' ']+['*']*[\w]+[' ']*['(']")
                 p = regex.match(line)
                 if p:
                     stack_of_functions.append(p.group())
                     self.functions.append(p.group())
-                    #print(stack_of_functions)
-        #print("Quantidade funções: " + str(len(self.functions)))
 
     def find_total_operators_and_operands(self):
         """
@@ -140,10 +138,12 @@ class Halstead:
                     pass
                 elif line == '\n':                 #linha em branco
                     pass
-                elif line[0] == '/':               #comentário
+                elif line[0] == '/*':              #comentário
                     pass
                 elif line[0] == '{':               #ignora }, porque pra cada { tem um }
                     self.total_operators.append('{}')
+                elif re.search("//", line):        #comentário
+                    pass
                 else:                              #linha de código normal
                     for function in self.functions:
                         if line.find(function) > -1:  #definição de função e falta coisa para ser tratada
@@ -198,7 +198,73 @@ class Halstead:
                                         self.total_operators.append(word)
                                         self.total_operators.append("*")
 
-        print("Total operandos:"+str(self.total_operands))
+                    index = 0
+                    start = -1
+                    end = -1
+                    for letter in line:      #pega a chamada de funções e coloca nos operators
+                        if letter == '(':
+                            end = index
+                            break
+                        if letter == ' ':
+                            if line[index + 1] == '(':
+                                pass
+                            else:
+                                start = index + 1
+                        index += 1
+                    # print(line)
+                    if start != -1 and end != -1:
+                        word = line[start:index]
+                        self.total_operators.append(word)
+                        # print(word)
+                    else:
+                        word = " "
+
+                    if word == "printf" or word == "scanf":  #pega o conteudo entre as "" do printf e scanf e coloca nos operands
+                        # print("linha:", line)
+                        start = -1
+                        end = -1
+                        index = 0
+                        for letter in line:
+                            if letter == '"':
+                                if start == -1:
+                                    start = index + 1
+                                else:
+                                    end = index
+                            index += 1
+                        word3 = line[start:end]
+                        self.total_operands.append(word3)
+                        if line.find('",') != -1:  #pega os parametros do scanf e printf e coloca nos operands
+                            pos = line.find("\",")
+                            # print(line[pos + 1:])
+                            word = line[pos + 1:]
+                            regex = re.compile(r"['&']*[\w]+")
+                            p = regex.findall(word)
+                            # print(p)
+                            self.total_operands.extend(p)
+                    elif word != " ":              #pega os parametros das outras funções e coloca nos operands
+                        parameters = line[end:]
+                        regex = re.compile(r"['&']*['*']*[\w]+")
+                        p = regex.findall(parameters)
+                        for i in p:
+                            if i in self.operators:
+                                pass
+                            else:
+                                self.total_operands.append(i)
+                    for words in line.split():
+                        if words in self.operators:
+                            self.total_operators.append(words)
+                    for letter in line:
+                        if letter == '{':
+                            self.total_operators.append("{}")
+                        if letter == '(':
+                            self.total_operators.append("()")
+                        if letter == '[':
+                            self.total_operators.append("[]")
+
+                    # ta faltando conseguir pegar as declarações de int, float etc de variaveis, n descobri como, tipo...
+                    # int i, j;
+                    # colocar o 'i' e 'j' nos operandos, n consegui fazer isso
+                    #indexline += 1
 
     def find_unique_operators_and_operands(self):
         """
@@ -233,7 +299,7 @@ class Halstead:
         """
         self.num_tot_operators = len(self.total_operators)  # pode ser trocado se for outra implementação
 
-        return self.num_tot_operands
+        return self.num_tot_operators
 
     def calculates_N2(self):
         """
@@ -323,17 +389,17 @@ def main():
     print("LOC:", h.count_lines_in_file())
     h.find_total_operators_and_operands()
     h.find_unique_operators_and_operands()
-    #print("n1:", h.calculates_n1())
-    #print("n2:", h.calculates_n2())
-    #print("N1:", h.calculates_N1())
-    #print("N2:", h.calculates_N2())
-    #print("n:", h.calculates_n())
-    #print("N:", h.calculates_N())
-    #print("V:", h.calculates_V())
-    #print("D:", h.calculates_D())
-    #print("E:", h.calculates_E())
-    #print("T:", h.calculates_T())
-    #print("B:", h.calculates_B())
+    print("n1:", h.calculates_n1())
+    print("n2:", h.calculates_n2())
+    print("N1:", h.calculates_N1())
+    print("N2:", h.calculates_N2())
+    print("n:", h.calculates_n())
+    print("N:", h.calculates_N())
+    print("V:", h.calculates_V())
+    print("D:", h.calculates_D())
+    print("E:", h.calculates_E())
+    print("T:", h.calculates_T())
+    print("B:", h.calculates_B())
 
 
 if __name__ == "__main__":
