@@ -262,10 +262,11 @@ class Halstead:
                         if letter == '[':
                             self.total_operators.append("[]")
 
-                    # ta faltando conseguir pegar as declarações de int, float etc de variaveis, n descobri como, tipo...
-                    # int i, j;
-                    # colocar o 'i' e 'j' nos operandos, n consegui fazer isso
-                    #indexline += 1
+                    regex = re.compile(r"[' ']*(| unsigned | signed | long | short)*(int | float | char | long | short | signed | unsigned | double | void | bool)+[' ']*([\w, ]*[';'])")
+                    m = regex.match(line)
+                    if m:
+                        print(m)
+                        self.total_operands.append(m.group())
 
     def find_unique_operators_and_operands(self):
         """
