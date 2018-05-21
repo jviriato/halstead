@@ -6,7 +6,6 @@ na linguagem Python, reconhecendo um arquivo .c.
 """
 
 import math
-import glob
 import os
 import argparse  # para argumentos em linha de comando
 import re        # para expressões regulares
@@ -385,8 +384,6 @@ def main():
     args = parser.parse_args()
 
     # Cria a classe que fará as metricas
-    files_path = [os.path.abspath(args.file) for x in os.listdir()]
-
     for file in os.listdir(args.file):
         if file.endswith(".c"):
             print("Nome do arquivo:", file)
