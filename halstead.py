@@ -107,7 +107,7 @@ class Halstead:
                 elif each == "(":
                     self.total_operators.append(each+")")
                 else: # nome de função ou tem ponteiro junto ou tem parenteses junto
-                    if re.search(".*", each): #tem ponteiro
+                    if re.search('.*', each): #tem ponteiro
                         if each[-1] == '*':
                             each = each.replace('*', '')
                             self.total_operators.append(each)
@@ -147,15 +147,58 @@ class Halstead:
                 else:                              #linha de código normal
                     for function in self.functions:
                         if line.find(function) > -1:  #definição de função e falta coisa para ser tratada
-                            print(function)
-                            print(line)
-                            #alguma re parecida com a de baixo
-                            #regex = re.compile(r"(unsigned |signed |long |short )*(int|float|char|long|short|signed|unsigned|double|void|bool)+['*']*[' ']+['*']*[\w]+[' ']*['(']")
-                            #p = regex.match(line)
                             pos = line.find('(')
-                            print(pos)
+                            temp = line[pos+1:]
 
+                            for word in temp.split():
+                                if word in self.operators:  #sem ponteiro, virgula, parenteses
+                                    self.total_operators.append(word)
+                                elif re.search('.*', word): #com ponteiro
+                                    if word[-1] == '{' and word[-2] == ')' and word[0] == '*':
+                                        word = word.replace('{', '')
+                                        word = word.replace(')', '')
+                                        word = word.replace('*', '')
+                                        self.total_operators.append("{}")
+                                        self.total_operators.append("()")
+                                        self.total_operators.append("*")
+                                        if word in self.operators:
+                                            self.total_operators.append(word)
+                                        else:
+                                            self.total_operands.append(word)
+                                    elif word[-1] == '{' and word[-2] == ')':
+                                        word = word.replace('{', '')
+                                        word = word.replace(')', '')
+                                        self.total_operators.append("{}")
+                                        self.total_operators.append("()")
+                                        if word in self.operators:
+                                            self.total_operators.append(word)
+                                        else:
+                                            self.total_operands.append(word)
+                                    elif word[-1] == ',' and word[0] == '*':
+                                        word = word.replace(',', '')
+                                        word = word.replace('*', '')
+                                        self.total_operands.append(word)
+                                        self.total_operators.append(",")
+                                        self.total_operators.append("*")
+                                    elif word[-1] == ')' and word[0] == '*':
+                                        word = word.replace(')', '')
+                                        word = word.replace('*', '')
+                                        self.total_operators.append(")")
+                                        self.total_operators.append("*")
+                                        if word in self.operators:
+                                            self.total_operators.append(word)
+                                        else:
+                                            self.total_operands.append(word)
+                                    elif word[-1] == ',':
+                                        word = word.replace(',', '')
+                                        self.total_operands.append(word)
+                                        self.total_operators.append(",")
+                                    elif word[-1] == '*':
+                                        word = word.replace('*', '')
+                                        self.total_operators.append(word)
+                                        self.total_operators.append("*")
 
+        print("Total operandos:"+str(self.total_operands))
 
     def find_unique_operators_and_operands(self):
         """
